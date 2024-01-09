@@ -5,6 +5,6 @@ module "compute" {
   image  = "ubuntu-20-04-x64"
   name   = "ubuntu-devops"
   region = "sfo3"
-  size   = "s-2vcpu-8gb"
+  size   = "s-2vcpu-8gb-amd"
   tags   = ["phrase"]
 }
