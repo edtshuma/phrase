@@ -50,7 +50,7 @@ _Below is a set of steps for provisioning the droplet._
    terraform import -var "do_token=${DO_TOKEN}" module.compute.digitalocean_droplet.do_droplet DROPLET-ID 
    ```
 
-## Dashboards
+## TODO
 
 | Feature                  | Description | Screenshot |
 |:---------------------------|:------------|:----------:|
