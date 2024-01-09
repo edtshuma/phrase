@@ -50,7 +50,7 @@ _Below is a set of steps for provisioning the droplet._
    terraform import -var "do_token=${DO_TOKEN}" module.compute.digitalocean_droplet.do_droplet DROPLET-ID 
    ```
 
-## TODO
+## Dashboards
 
 | Feature                  | Description | Screenshot |
 |:---------------------------|:------------|:----------:|
@@ -59,6 +59,7 @@ _Below is a set of steps for provisioning the droplet._
 | IP Addressing   | There should be a lookup repository for IP range allocation to ensure that the address alooacted is unique and does not overlaps with other subnets. | [LINK](https://raw.githubusercontent.com/dotdc/media/main/grafana-dashboards-kubernetes/k8s-system-coredns.png) |
 | Network Segmentation     | The server should be provisioned in a software defined network(VPC) to segregate it from other types of workloads e.g database and increase security/granulity. | [LINK](https://docs.digitalocean.com/products/networking/vpc/) |
 | Network Monitoring  | There should be utility to provide logs of data coming into and out of attached network interfaces. | [LINK](https://docs.digitalocean.com/products/monitoring/how-to/install-agent/) |
+| Automated Tests  | There should be integration and unit tests on Terraform code (via CI/CD pipelines) where possible. Tools like tfsec, Checkov and OPA should be used. Only PRs that pass defined tests should deploy to production. | [LINK](https://spacelift.io/blog/what-is-tfsec) |
 |   |
 
 
