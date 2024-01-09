@@ -1,0 +1,68 @@
+---
+owner: "edtshuma"
+title: Server Setup Workflow 
+last_reviewed_on: 2024-01-09
+review_in: 6 months
+---
+
+# <%= current_page.data.title %>
+
+## Introduction
+
+Since an existing server was available, the server has been setup using  [Terraform import](https://spacelift.io/blog/importing-exisiting-infrastructure-into-terraform) in the Phrase Platform, with all the code stored in [infrastructure](https://github.com/edtshuma/phrase/tree/main/infrastructure) subdirectory.
+
+## RECOMMENDED
+
+For all infrastructure  deployments the Phrase platform should use a [GitOps approach](https://about.gitlab.com/topics/gitops/).
+
+All infrastructure resources SHOULD be provisioned by [Terraform ](https://developer.hashicorp.com/terraform/intro)
+
+The Cloud Firewall resource for the droplet should be configured in the console and also imported into Terraform configuration.
+
+### Importing the existing server
+
+1. Create DigitalOcean Account
+ 
+https://cloud.digitalocean.com/registrations/new
+
+
+2. Login to the console and create a DigitalOcean Personal Access Token
+ 
+ https://docs.digitalocean.com/reference/api/create-personal-access-token/
+
+
+ 3. Create a DigitalOcean Linux-based virtual machine (droplet) with a tag 
+
+ https://docs.digitalocean.com/products/droplets/how-to/create/
+
+
+4. Add a DigitalOcean Cloud Firewall to your Droplet
+
+https://docs.digitalocean.com/products/networking/firewalls/how-to/create/
+
+
+5. Install DigitalOcean Command Line Client on your local machine
+
+https://github.com/digitalocean/doctl/releases
+
+
+5. Configure  Access for DigitalOcean Command Line Client(doctl)
+   
+   ```terminal
+doctl auth init
+```
+
+6. Verify doctl access: List available Droplets using doctl
+
+ ```terminal
+ doctl compute droplet list
+```
+
+7. Import the droplet into Terraform configuration
+
+ ```terminal
+ terraform import -var "do_token=${DO_TOKEN}" module.compute.digitalocean_droplet.do_droplet DROPLET-ID 
+```
+
+
+//TODO Add Sample Output 
