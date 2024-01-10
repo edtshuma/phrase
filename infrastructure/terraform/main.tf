@@ -7,4 +7,7 @@ module "compute" {
   region = "sfo3"
   size   = "s-2vcpu-8gb-amd"
   tags   = ["phrase"]
+  ssh_user = "gold"
+  connection_type = "ssh"
+  host = var.host
 }
