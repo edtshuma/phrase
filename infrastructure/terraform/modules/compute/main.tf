@@ -8,4 +8,3 @@ resource "digitalocean_droplet" "do_droplet" {
     tags    = var.tags
 }
 
-

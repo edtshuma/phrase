@@ -15,3 +15,4 @@ variable "region" {
 variable "size" {
     type = string
 }
+
