@@ -7,7 +7,8 @@ using Phrase.Entities;
 using Phrase.Helpers;
 using Phrase.Models;
 using Phrase.Services;
-
+using StackExchange.Redis;
+using Microsoft.Extensions.Caching.Distributed;
 
 
 namespace Phrase.Controllers
@@ -21,10 +22,13 @@ public class PhraseController : ControllerBase
         private IPalindromeService _palindromeService;
         private IMapper _mapper;
         private DataContext _context;
+
+        private readonly IDistributedCache _distributedCache;
   
-        public PhraseController(IPalindromeService palindromeService, IMapper mapper,DataContext context)
+        public PhraseController(IPalindromeService palindromeService, IMapper mapper,DataContext context, IDistributedCache distributedCache)
         {
             _palindromeService = palindromeService;
+            _distributedCache = distributedCache;
            _mapper = mapper;
            _context = context;
            
@@ -95,7 +99,56 @@ public class PhraseController : ControllerBase
 
         return Ok("Text is not palindrom");
     }
+   
+    [HttpGet]
+    [ActionName("redis-hits")]
+    public async Task<IActionResult> RedisHits()
+    {
+        try
+        {
+            var hits = await RetryWithDelayAsync(() => IncrementRedisHitsAsync(), 5, TimeSpan.FromSeconds(0.5));
+            return Ok($"Redis hits {hits}");
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "No response from redis");
+        }
+    }
 
+    private async Task<T> RetryWithDelayAsync<T>(Func<Task<T>> action, int retryCount, TimeSpan delay)
+    {
+        while (retryCount > 0)
+        {
+            try
+            {
+                return await action();
+            }
+            catch (Exception)
+            {
+                if (retryCount == 0)
+                {
+                    throw;
+                }
+                retryCount--;
+                await Task.Delay(delay);
+            }
+        }
+        return default; 
+    }
+
+    private async Task<long> IncrementRedisHitsAsync()
+    {
+        const string cacheKey = "hits";
+        var existingHits = await _distributedCache.GetAsync(cacheKey);
+
+        long hits = existingHits == null
+            ? 1
+            : BitConverter.ToInt64(existingHits);
+
+        await _distributedCache.SetAsync(cacheKey, BitConverter.GetBytes(++hits));
+
+        return hits;
+    }
     
 }
 
